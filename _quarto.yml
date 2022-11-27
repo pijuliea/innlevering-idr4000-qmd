@@ -2,22 +2,24 @@ project:
   type: book
 
 book:
-  title: "innlevering-idr4000-qmd"
-  author: "Jane Doe"
-  date: "27.11.2022"
+  title: "Eksamen IDR4000"
+  author: "Kandidatnummer"
+  date: "2022-12-02"
   chapters:
     - index.qmd
-    - intro.qmd
-    - summary.qmd
+    - part1.qmd
+    - part2.qmd
+    - part3.qmd
+    - part4.qmd
+    - part5.qmd
     - references.qmd
 
 bibliography: references.bib
 
 format:
-  html:
-    theme: cosmo
   pdf:
     documentclass: scrreprt
+    number-sections: false
 
 
 
