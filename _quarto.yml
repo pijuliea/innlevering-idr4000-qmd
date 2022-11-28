@@ -16,6 +16,12 @@ book:
 
 bibliography: references.bib
 
+crossref: 
+  fig-labels: arabic
+  fig-title: "Figur"
+  tbl-labels: arabic
+  tbl-title: "Tabell"
+
 format:
   pdf:
     documentclass: scrreprt

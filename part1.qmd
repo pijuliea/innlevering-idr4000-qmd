@@ -1,3 +1,15 @@
 # Deloppgave 1: Beskrivende statistikk, reliabilitet og validitet, verktøy for reproduserbar dataanalyse
 
 <!-- Part 1: Descriptive statistics, reliability and validity, tools for reproducible data science -->
+
+
+```{r}
+#| fig-cap: "Eksempel"
+
+
+plot(rnorm(10, 10, 10))
+
+
+
+```
+
