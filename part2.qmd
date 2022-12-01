@@ -12,7 +12,7 @@ I denne undersøkelsen ble DNA ekstrahert fra helblod, etter videre bearbeiding 
 
 Fra helblod har vi ekstrahert DNA i henhold til protokoll adaptert fra Bartlett & Stirling [-@bartlett2003]. Dette har vi brukt til å bestemme ACTN3 genotype ved hjelp av protokoll adaptert fra Schadock et al. [-@schadock2015].
 
-Det ble innhentet blod i EDTA-rør fra hver av deltakerne ( P, IJ, EÅ, og EH). 3 mL blod ble pipettert over i et 15 mL rør. Vortex før pipettering. Deretter tilsatte vi 12 mL reagens A. Dette ble mixet ved rotasjon i 4 minutter. Deretter sentrifugerte vi rørene ved 3000g i 5 min ved romtemperatur. Supernatanten avpipetteres og kastes uten at cellepellets forstyrres. All overskuddsvæske fjernes. Reagens B tilsettes før vortex 30s.
+Det ble innhentet blod i EDTA-rør fra hver av deltakerne (P, IJ, EÅ, og EH). 3 mL blod ble pipettert over i et 15 mL rør. Vortex før pipettering. Deretter tilsatte vi 12 mL reagens A. Dette ble mixet ved rotasjon i 4 minutter. Deretter sentrifugerte vi rørene ved 3000g i 5 min ved romtemperatur. Supernatanten avpipetteres og kastes uten at cellepellets forstyrres. All overskuddsvæske fjernes. Reagens B tilsettes før vortex 30s.
 
 250 µL 5M natriumperklorat ble tilsatt og det hele ble blandet ved rolig vending av røret før det ble plassert i vannbad (65°C) i 15-20 min. Prøven ble deretter avkjølt til romtemperatur og tilsatt 2 mL iskald kloroform, blandet på roterende mikser i 60 minutter, og sentrifugert ved 2400g i 2 min.
 

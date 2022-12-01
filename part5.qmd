@@ -1,9 +1,3 @@
----
-output: html_document
-editor_options: 
-  chunk_output_type: console
----
-
 # Deloppgave 5: Analysere repeterte målinger
 
 ## Introduction
@@ -237,5 +231,3 @@ The paired t-test compared the change in maximal muscle strength (leg extension)
 The results of this study show that 2-3 weekly resistance training sessions improve maximal strength and lean mass. This is regardless of training volume, but the effect is greater when doing 3 sets instead of only 1. This is consistent with previous research [@rønnestad2007; @rhea2002; @schoenfeld2017]. McBride et al. [-@mcbride2003] came to the same conclusion regarding the effect of multiple set resistance training on strength gain but could not observe significant differences regarding lean mass. There are, however, differences in the response of the lower body compared to the upper body when it comes to strength gain. Studies show that training 3 sets was more effective for strength gain in the lower body. This could not always be said about the strength gain in the upper body [@rønnestad2007]. This indicates that it could be enough to train 1 set in upper body exercises and still get a significant effect on strength gain.
 
 One challenge with measuring body composition with a DXA scan could be that it has to be carried out very precisely as even little deviations can have a big impact on the results. It is important to standardize the testprotocol as well as what the participant does in the hours leading up to the test.
-
-## References

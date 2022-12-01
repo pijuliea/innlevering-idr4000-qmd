@@ -82,7 +82,8 @@ dat %>%
   summarise(s = sd(diff),
             m = mean(c(pre, post)),
             te = s / sqrt(2),
-            cv = 100 * (te / m))
+            cv = 100 * (te / m)) %>%
+  print()
 ```
 
 ```{r figure-VO2}
@@ -122,7 +123,8 @@ dat %>%
   summarise(s = sd(diff),
             m = mean(c(pre, post)),
             te = s / sqrt(2),
-            cv = 100 * (te / m))
+            cv = 100 * (te / m)) %>%
+  print()
 ```
 
 ```{r figure-speed}
@@ -153,5 +155,3 @@ ggplot(data = rawdata, aes(x = timepoint,
 Reliabiliteten i forskning er veldig viktig for å kunne reprodusere tester og målinger. En test som er reliabel skal produsere de samme resultatene hver gang man gjentar den under samme forholdene [@hopkins2000]. Det er forskjellige faktorer som gjør at en test er reliabel. I vår undersøkelse var det få forsøkspersoner (n = 7), det hadde vært bedre for reliabiliteten hvis vi hadde hatt flere. God standardisering av testen er en viktig faktor også. For å standardisere hele gjennomføringen av testen prøvde vi å gjøre alt likt fra gang til gang. Informasjonen vi ga til deltakerne under testen var minimal for å sikre lik gjennomføring hos alle. Testprotokollen ble gjennomført likt hver gang, men en mulig feilkilde er at det var ulik testleder på test og re-test. Testledere og assistenter har lite erfaring og kan ha påvirket laktatmålinger. Det var også veldig ulik erfaring hos testpersonene. En del hadde gjort en laktatterskeltest før og for andre var det første gangen de løp på en mølle.
 
 Standardfeilen er en måte å angi feilmarginen av en måling. Når man ønsker å måle f.eks. forbedringen av utholdenhetsprestasjonen på en gruppe individer er det viktig kunne differensiere mellom hva som er endring og hva som er målefeil. Standardfeilen blir ofte utregnet som variasjonskoeffisient (prosent av gjennomsnittet). Grunnen til at man bruker variasjonskoeffisienten er at sammenligningen blir mer nøyaktig ettersom standardfeilen vanligvis øker når målingsverdiene blir større, mens prosentverdiene er ganske like [@hopkins2000]. Jo større variasjonskoeffisienten er, jo større er spredningen. For å forbedre reliabiliteten og senke variasjonskoeffisienten kan man blant annet ha samme testleder på begge tester, standardisere de siste 48 timene for testdeltakerne før test, ha mer rutine i labbarbeid og flere forsøkspersoner [@hopkins2000]. Andre faktorer som kan føre til endringer fra test til re-test kan være læringseffekten, motivasjon eller utmattelsesgraden.
-
-## Referanser
