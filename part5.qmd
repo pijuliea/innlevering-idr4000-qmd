@@ -120,7 +120,8 @@ dxadata %>%
              group = sets)) + geom_line() +
   labs(x = "Timepoint",
        y = "Lean mass",
-       color = "Sets")
+       color = "Sets") +
+  scale_color_manual(values = c("deeppink", "cornflowerblue"))
 ```
 
 #### Maximal strength
