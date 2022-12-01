@@ -3,7 +3,7 @@ project:
 
 book:
   title: "Eksamen IDR4000"
-  author: "Kandidatnummer"
+  author: "Kandidatnummer: 107"
   date: "2022-12-02"
   chapters:
     - index.qmd

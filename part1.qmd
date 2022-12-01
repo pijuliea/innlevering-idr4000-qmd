@@ -1,15 +1,157 @@
 # Deloppgave 1: Beskrivende statistikk, reliabilitet og validitet, verktøy for reproduserbar dataanalyse
 
-<!-- Part 1: Descriptive statistics, reliability and validity, tools for reproducible data science -->
-
-
-```{r}
-#| fig-cap: "Eksempel"
-
-
-plot(rnorm(10, 10, 10))
-
-
-
+```{r load-data}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(gt)
 ```
 
+## Introduksjon
+
+Laktatterskelen kan være et viktig parameter for å bestemme utholdenhetsprestasjonen. En utfordring er reliabiliteten av testene som blir gjennomført for å få laktatverdier og hvor valide disse bestemmer utholdenhetsprestasjonen [@faude2009]. Det er vanlig å gjennomføre en laktatprofiltest med trinnvis økende belastning hvor man vanligvis observerer en økning i laktatkonsentrasjonen ved økende belastning. Det gjelder å tolke det resulterende laktatprofil med hensyn til utholdenhetsevne. Det er generelt akseptert å tolke en høyreforskyvning (lavere laktatkonsentrasjon ved gitt belastning) av laktatkurven som forbedret utholdenhetskapasitet [@faude2009]. Det er viktig å huske på at en laktatprofiltest kan gjennomføres på forskjellige måter og at f.eks. belastningstiden (drag) eller intensiteten kan variere. Stedet man tar blodet fra (øreflippen, fingertuppen) kan også ha en effekt på resultatet, prøvene tatt fra øreflippen har vist seg å ha lavere laktatkonsentrasjon enn prøvene fra fingertuppen [@faude2009]. Laktatterskelen på 4 mmol/L ble etablert av flere forskere, fordi det så ut til å være den høyeste laktatkonsentrasjonen som var bærekraftig over en lengre tid med belastning. Det har vist seg at det finnes forskjeller fra individ til individ og at en fast terskel på 4 mmol/L kan under- og overestimere utholdenhetskapasiteten til den enkelte [@faude2009].
+
+I denne undersøkelsen gjennomførte vi laktatterskeltester for å se på hastigheten og VO~2~-verdiene på 4mmol/L.
+
+## Metode
+
+Deltakerne i denne studien var friske idrettsstudenter (n = 7). Alle gjennomførte to laktatterskeltester med trinnvis økende belastning på forskjellige dager, bortsett fra en person, som gjennomførte begge testene (test og re-test) på samme dag. Laktat, RER, HF, VE og VO~2~ ble målt.
+
+Før testpersonene kom gjorde testlederen og testassistenten alt klar for gjennomføringen av testen og kalibrerte utstyret. Når deltakerne ankommet testlokalet ble de informert om fremgangsmåten og data som kjønn, alder, høyde ble innhentet. I forkant av testen målte alle deltakerne kroppsvekten (uten sko, 300g ble trukket av) som ble lagt inn i testprogrammet. Deltakerne ble også informert om BORG skalaen, som ble brukt underveis i testen.
+
+Testen ble gjennomført på tredemøllen (Katana Sport, Lode) med en stigningsprosent av 1%. Det var ingen oppvarming og deltakerne startet rett med første draget og en starthastighet på 8.5 km/t. Hvert drag varte i 5 minutter og hastigheten økte med 1.5 km/t på hvert drag. Deltakeren skulle ta i munnstykke etter 1:30 minutter og ut etter 4:30 minutter. Etter 5 minutter hoppet deltakeren av møllen og laktatmåling ble tatt fra fingertuppen. Det ble også spurt om hvor personen var på BORG skala. Pausen mellom dragene var 1 minutt, hastigheten ble skrudd opp i pausen. Testen avsluttet ved en laktatmåling på over 4 mmol/L. Deltakerene fikk informasjon 15 sekunder før de skulle ta på og av masken, når de skulle hoppe på og av løpemøllen. Underveis i testen ble også VO~2~, RER, HF og VE plottet inn rett i et plott skjema i Excel. Disse verdiene ble notert hvert 30 sekund fra 2:30-4:30 i hver belastningsdrag.
+
+VO~2~ ble målt ved hjelp av en metabolsk analysator med Vyntus CPX miksekammer. Før hver test ble analysatoren gass- og volumkalibrert og gjorde målinger hvert 30 sekund. Laktat ble analysert etter hver drag (BIOSEN C-Line Glucose and Lactate analyzer). Informasjonen som ble gitt til deltakerne under testen var minimal for å sikre lik gjennomføring hos alle.
+
+#### Databearbeiding
+
+I vår rapport har vi tatt med VO~2~- og laktatverdiene, med hjelp av dataene kunne vi regne ut hvilken hastighet og VO~2~ testpersonen hadde på 4 mmol laktat. På dataen fra O~2~ analysatoren regnet vi ut en verdi fra hver belastning ved å regne gjennomsnittet av de to høyeste målingene. O~2~ og laktat på 4 mmol/L ble regnet ut i Excel og bearbeidet videre i RStudio. Vi har gjort en utregning av standardavvik (SD), gjennomsnitt (mean) av test og re-test, typical error (te) og coefficient of variation (cv).
+
+## Resultater
+
+Tabell 1 viser en økning av den gjennomsnittelige hastigheten ved 4 mmol/L fra test til re-test. Gjennomsnittelig VO~2~ økte også.
+
+```{r table-test vs. re-test}
+#| label: tbl-char
+#| tbl-cap: "Group characteristics (at 4 mmol/L)"
+#| echo: false
+#| message: false
+#| warning: false
+
+rawdata <- read_excel("data/rawdata.xlsx")
+rawdata %>%
+  select(subject, timepoint, lac.4.speed, lac.4.vo2) %>%
+  group_by(timepoint) %>%
+  summarise(gj1 = mean(lac.4.vo2, na.rm = TRUE),
+            st1 = sd(lac.4.vo2, na.rm = TRUE),
+            gj2 = mean(lac.4.speed, na.rm = TRUE),
+            st2 = sd(lac.4.speed, na.rm = TRUE)) %>%
+  mutate(timepoint = factor(timepoint,
+                            levels = c("pre", "post"),
+                            labels = c("Test", "Re-Test"))) %>%
+  gt(caption = md("Group characteristics")) %>%
+  fmt_number(columns = gj1:st1:gj2:st2) %>%
+  fmt_number(columns = gj1,
+              decimals = 1) %>%
+  fmt_number(columns = st1,
+              decimals = 1) %>%
+  fmt_number(columns = gj2,
+              decimals = 1) %>%
+  fmt_number(columns = st2,
+              decimals = 1) %>%
+  cols_label(timepoint = "Timepoint",
+             gj1 = md("Mean VO<sub>2</sub><br><small>[mL/min]"),
+             st1 = md("SD VO<sub>2</sub><br><small>[mL/min]"),
+             gj2 = md("Mean Speed<br><small>[km/h]"),
+             st2 = md("SD Speed<br><small>[km/h]"))
+```
+
+#### VO~2~ ved 4mmol/L
+
+Gjennomsnittelig VO~2~ ved 4mmol/L er 3572,9 ml/min (± 217,1), standardfeilen (typical error) uttrykt som variasjonskoeffisient (coefficient of variation) ligger på 4.3%.
+
+```{r reliability-VO2}
+#| echo: false
+#| include: false
+dat <- read_excel("data/rawdata.xlsx") %>%
+  select(subject, timepoint, lac.4.vo2)
+
+dat %>%
+  pivot_wider(names_from = timepoint, values_from = lac.4.vo2) %>%
+  mutate(diff = post - pre) %>%
+  summarise(s = sd(diff),
+            m = mean(c(pre, post)),
+            te = s / sqrt(2),
+            cv = 100 * (te / m))
+```
+
+```{r figure-VO2}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "VO<sub>2</sub> [mL/min] ved 4 mmol/L - Test og Re-Test"
+rawdata <- read_excel("data/rawdata.xlsx") %>%
+  mutate(timepoint = factor(timepoint,
+                            level = c("pre", "post"),
+                            labels = c("Test", "Re-Test")),
+         subject = factor(subject))
+ggplot(data = rawdata, aes(x = timepoint, 
+                                y = lac.4.vo2,
+                           color = subject,
+                           group = subject)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "Tidspunkt", 
+       y = "VO2 at 4 mmol/L [mL/min]",
+       color = "Deltakere")
+```
+
+#### Hastighet ved 4mmol/L
+
+Gjennomsnittelig hastighet ved 4 mmol/L er 13,2 (± 0,55), standardfeilen uttrykt som variasjonskoeffisient ligger på 2.9%.
+
+```{r reliability-speed}
+#| echo: false
+#| include: false
+dat <- read_excel("data/rawdata.xlsx") %>%
+  select(subject, timepoint, lac.4.speed)
+
+dat %>%
+  pivot_wider(names_from = timepoint, values_from = lac.4.speed) %>%
+  mutate(diff = post - pre) %>%
+  summarise(s = sd(diff),
+            m = mean(c(pre, post)),
+            te = s / sqrt(2),
+            cv = 100 * (te / m))
+```
+
+```{r figure-speed}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Hastighet [km/h] ved 4 mmol/L - Test og Re-Test"
+
+rawdata <- read_excel("data/rawdata.xlsx") %>%
+  mutate(timepoint = factor(timepoint,
+                            level = c("pre", "post"),
+                            labels = c("Test", "Re-Test")),
+         subject = factor(subject))
+
+ggplot(data = rawdata, aes(x = timepoint, 
+                                y = lac.4.speed,
+                           color = subject,
+                           group = subject)) +
+  geom_point() +
+  geom_line() +
+   labs(x = "Tidspunkt", 
+       y = "Hastighet ved 4 mmol/L [km/h]",
+       color = "Deltaker")
+```
+
+## Reliabilitet og diskusjon
+
+Reliabiliteten i forskning er veldig viktig for å kunne reprodusere tester og målinger. En test som er reliabel skal produsere de samme resultatene hver gang man gjentar den under samme forholdene [@hopkins2000]. Det er forskjellige faktorer som gjør at en test er reliabel. I vår undersøkelse var det få forsøkspersoner (n = 7), det hadde vært bedre for reliabiliteten hvis vi hadde hatt flere. God standardisering av testen er en viktig faktor også. For å standardisere hele gjennomføringen av testen prøvde vi å gjøre alt likt fra gang til gang. Informasjonen vi ga til deltakerne under testen var minimal for å sikre lik gjennomføring hos alle. Testprotokollen ble gjennomført likt hver gang, men en mulig feilkilde er at det var ulik testleder på test og re-test. Testledere og assistenter har lite erfaring og kan ha påvirket laktatmålinger. Det var også veldig ulik erfaring hos testpersonene. En del hadde gjort en laktatterskeltest før og for andre var det første gangen de løp på en mølle.
+
+Standardfeilen er en måte å angi feilmarginen av en måling. Når man ønsker å måle f.eks. forbedringen av utholdenhetsprestasjonen på en gruppe individer er det viktig kunne differensiere mellom hva som er endring og hva som er målefeil. Standardfeilen blir ofte utregnet som variasjonskoeffisient (prosent av gjennomsnittet). Grunnen til at man bruker variasjonskoeffisienten er at sammenligningen blir mer nøyaktig ettersom standardfeilen vanligvis øker når målingsverdiene blir større, mens prosentverdiene er ganske like [@hopkins2000]. Jo større variasjonskoeffisienten er, jo større er spredningen. For å forbedre reliabiliteten og senke variasjonskoeffisienten kan man blant annet ha samme testleder på begge tester, standardisere de siste 48 timene for testdeltakerne før test, ha mer rutine i labbarbeid og flere forsøkspersoner [@hopkins2000]. Andre faktorer som kan føre til endringer fra test til re-test kan være læringseffekten, motivasjon eller utmattelsesgraden.
+
+## Referanser

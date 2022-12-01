@@ -1,3 +1,241 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
 # Deloppgave 5: Analysere repeterte målinger
 
-<!-- Part 1: Analyzing repeated measures experiments -->
+## Introduction
+
+Resistance training is important for general health and increases strength and skeletal muscle size when done over a longer period of time. There are different variables and factors that influence the effect of resistance training and individuals show different responses to resistance training and its volume [@ahtiainen2016].
+
+Several studies on resistance training have investigated how factors like number of sets and repetitions influence body composition and muscle strength differently. Schoenfeld et al. [-@schoenfeld2017] looked at the effect of number of weekly sets on muscle size. The number of weekly sets had a significant effect on muscle size changes (p=.002). In another study Rønnestad et al. [-@rønnestad2007] compared the effects of resistance training volume on strength gains in untrained men. Participants were randomly split up into two groups, one group trained 3 sets in all the leg exercises and 1 set in the upper body exercises (3L-1UB) while the other group trained 1 set in leg exercises and 3 sets in upper body exercises (1L-3UB). After 11 weeks of training the 3L-1UB group (41%) improved their 1RM in the leg exercises significantly more (p\<.001) than the 1L-3UB group (21%). There were no group-differences in the upper body exercises. McBride et al. [-@mcbride2003] designed a study to compare the effects of single (1 set) versus multiple (6 sets) set resistance training on strength and body composition in untrained men. After the 12 week intervention (leg press and bicep curl) both groups had improved their percentage strength significantly, with the multiple set group showing an even better increase in the bicep curl than the single set group. No significant differences between the groups were found regarding body composition. Rhea et al. \[-[@rhea2002]\] also looked at strength gain after following either a single or multiple set resistance training program and found that training 3 sets gave a statistically significant increase in the 1RM in the leg press.
+
+Contrary to those findings is the conclusion of Carpinelli [-@carpinelli1998], who says that performing single or multiple set resistance training for a training period of 4 to 25 weeks does not result in significant difference in strength increase.
+
+With the background of those findings the goal of this study was to determine if there is a significant change in lean mass and maximal strength with different resistance training volumes, in this case one set vs. three sets.
+
+## Methods
+
+#### Study overview and participants
+
+The participants (n = 41) were between 18 and 40 years old and had previous experience with physical activity. They had to be non-smokers. They had to tolerate local anaesthetics and had to be injury free to be able to use full muscle strength. The upper limit of weekly resistance training during the last 12 months was one session. Participants were excluded if they took prescription medicine that could influence training-adaptations. 7 participants were excluded via the data analysis because they hadn't completed 85% of the training sessions.
+
+#### Intervention
+
+The 12 week long intervention consisted of 2-3 full-body resistance training sessions per week. Participants performed the leg exercises unilaterally and trained with different training volumes on each leg. This was done to see possible differences in the effect of resistance training volumes. It was chosen randomly which leg performed one set (single set) or three sets (multiple sets). Body composition and muscle strength were tested at baseline and after the training intervention. There were additional muscle strength assessments after 3, 5 and 9 weeks of training.
+
+#### Training protocol
+
+The warm-up was a standardized routine which all participants followed before getting started with the training sessions. Participants started with 5 minutes of cycling on the ergometer at 12-14 RPE (rating of perceived exertion). After that they performed 10 repetitions of all of the body weight exercises (push-ups, sit-ups, back extensions, squats). The last part of the warm-up consisted of one set of each of the resistance exercises with 10 repetitions at around 50% of 1RM (repetition maximum).
+
+Participants followed this order while performing the resistance exercises: unilateral leg press, leg curl, knee extension. The exercises were performed as either a single set or multiple sets. The single sets were done between the second and third set of the multiple set side. The lower body exercises were followed by two sets of bilateral bench press, pull down and either shoulder press or seated rowing - those two exercises were alternated from session to session. The participants had between 90 to 180 seconds of set-rest. As far as training intensity goes, the intervention started out the first two weeks with 10RM, increased gradually up to 8RM the following 3 weeks and ended at 7RM during the last 7 weeks. Some of the training sessions were performed without supervision, where participants were asked to keep detailed logs. An average of 91% sessions were supervised.
+
+#### Maximal strength assessment
+
+The maximal strength was measured as a 1RM in the unilateral leg press and knee extension. Participants performed a specific warm-up before each exercise which consisted of 10, 6 and 3 repetitions at 50, 75 and 85% of the predicted maximum. The 1RM was then assessed by increasing the weight until it could not be lifted any longer. The 1RM for each exercise was the highest resistance a participant could successfully lift with full range of motion. Participants got four to six tries.
+
+#### Body composition (DXA)
+
+Dual-energy X-ray absorptiometry (DXA) was used to test each participant's body composition (lean mass) before and after the intervention. A standard protocol was followed and participants had to fast the 2 hours before the test as well as not do any intense physical activity 48 hours prior to the scan.
+
+#### Data analysis and statistics
+
+The statistical analysis was performed using R-studio (Version 4.2.2). To assess the effect of the different training volumes on lean mass a change score from the pretest to the posttest was calculated. To see how the different training volumes affected maximal strength (leg press and leg extension), an average baseline value was calculated (pretest and session one) and from that a change score to the posttest was calculated. The test used to analyse those change scores was a paired t-test.
+
+## Results
+
+#### Body composition - lean mass
+
+```{r}
+#| echo: FALSE
+#| warning: FALSE
+#| message: FALSE
+#| include: FALSE
+
+#### LEAN MASS
+
+library(tidyverse); library(exscidata); library(lme4)
+
+# Load data
+datlean <- dxadata %>%
+  select(participant:include, lean.left_leg, lean.right_leg) %>%
+        
+        # Extract leg specific data
+  pivot_longer(names_to = "leg", 
+               values_to = "lean.mass", 
+               cols = lean.left_leg:lean.right_leg) %>%
+  mutate(leg = if_else(leg == "lean.left_leg", "L", "R"), 
+         sets = if_else(multiple == leg, "multiple", "single")) %>%
+  select(participant, time, sex, include, sets, leg, lean.mass) %>%
+        # Filter only included participants
+        filter(include == "incl") %>%
+        # Make data set wider by time 
+        
+        pivot_wider(names_from = "time", 
+                    values_from = "lean.mass") %>%
+        # Calculate change score
+        
+        mutate(change = post - pre) %>%
+        
+        # Keep change score and make it wider by sets
+        select(participant:sets, change) %>%
+        pivot_wider(names_from = sets, values_from = change) %>%
+        
+  print()
+
+### Use simple t-test on change score
+
+t.test(datlean$multiple, datlean$single, paired = TRUE)
+```
+
+The paired t-test compared the change in lean mass from the pretest to the posttest regarding multiple and single set training. The change in lean mass regarding the multiple and single set leg was significant (t(33)=2.1875, p=.0359).
+
+```{r}
+#| echo: FALSE
+#| warning: FALSE
+#| message: FALSE
+#| include: TRUE
+#| fig-cap: "Change in lean mass from pre to post, single vs. multiple sets"
+
+#### LEAN MASS FIGURE
+
+library(exscidata); library(tidyverse)
+
+data("dxadata")
+
+dxadata %>%
+  select(participant:include, lean.left_leg, lean.right_leg) %>%
+  pivot_longer(names_to = "leg", 
+               values_to = "lean.mass", 
+               cols = lean.left_leg:lean.right_leg) %>%
+  mutate(leg = if_else(leg == "lean.left_leg", "L", "R"), 
+         sets = if_else(multiple == leg, "multiple", "single")) %>%
+  select(participant, time, sex, include, sets, leg, lean.mass) %>%
+  filter(time %in% c("pre", "post")) %>%
+  group_by(time, sets) %>%
+  summarise(m = mean(lean.mass)) %>%
+  mutate(time = factor(time, levels = c("pre", "post"))) %>%
+  ggplot(aes(time, m, color = sets,
+             group = sets)) + geom_line() +
+  labs(x = "Timepoint",
+       y = "Lean mass",
+       color = "Sets")
+```
+
+#### Maximal strength
+
+```{r}
+#| echo: FALSE
+#| warning: FALSE
+#| message: FALSE
+#| include: FALSE
+
+#### MUSCLE STRENGTH - LEGPRESS
+
+library(tidyverse); library(exscidata); library(lme4)
+
+data("strengthvolume")
+
+
+# Load data
+datpress <- strengthvolume %>%
+  select(participant, sex, exercise, include, time, sets, leg, load) %>%
+
+        # Filter only included participants
+        filter(include == "incl") %>%
+        
+        # Calculate average baseline
+        mutate(time = if_else(time %in% c("pre", "session1"), "pre", time)) %>%
+        group_by(time, exercise, participant, sex, sets) %>%
+        summarise(load = mean(load, bna.rm = TRUE)) %>%
+       
+        # Use a specific strength test and only pre-post data
+        
+        filter(exercise == "legpress",
+                time %in% c("pre", "post")) %>%
+  
+        # Make data set wider by time
+
+        pivot_wider(names_from = "time",
+                    values_from = "load") %>%
+  
+        # Calculate change score
+
+        mutate(change = post - pre) %>%
+
+        # Keep change score and make it wider by sets
+  
+        select(participant:sets, change) %>%
+        pivot_wider(names_from = sets, values_from = change) %>%
+
+  print()
+
+### Use simple t-test on change score
+
+t.test(datpress$multiple, datpress$single, paired = TRUE)
+```
+
+The paired t-test compared the change in maximal muscle strength (leg press) from the pretest to the posttest regarding multiple and single set training. The change in maximal muscle strength (leg press) regarding the multiple and single set leg was significant (t(29)=2.1366, p=.0412).
+
+```{r}
+#| echo: FALSE
+#| warning: FALSE
+#| message: FALSE
+#| include: FALSE
+
+#### MUSCLE STRENGTH - LEG EXTENTION
+
+library(tidyverse); library(exscidata); library(lme4)
+
+data("strengthvolume")
+
+
+# Load data
+datext <- strengthvolume %>%
+  select(participant, sex, exercise, include, time, sets, leg, load) %>%
+
+        # Filter only included participants
+        filter(include == "incl") %>%
+        
+        # Calculate average baseline
+        mutate(time = if_else(time %in% c("pre", "session1"), "pre", time)) %>%
+        group_by(time, exercise, participant, sex, sets) %>%
+        summarise(load = mean(load, bna.rm = TRUE)) %>%
+       
+        # Use a specific strength test and only pre-post data
+        
+        filter(exercise == "legext",
+                time %in% c("pre", "post")) %>%
+  
+        # Make data set wider by time
+
+        pivot_wider(names_from = "time",
+                    values_from = "load") %>%
+  
+        # Calculate change score
+
+        mutate(change = post - pre) %>%
+
+        # Keep change score and make it wider by sets
+  
+        select(participant:sets, change) %>%
+        pivot_wider(names_from = sets, values_from = change) %>%
+
+  print()
+
+### Use simple t-test on change score
+
+t.test(datext$multiple, datext$single, paired = TRUE)
+```
+
+The paired t-test compared the change in maximal muscle strength (leg extension) from the pretest to the posttest regarding multiple and single set training. The change in maximal muscle strength (leg extension) regarding the multiple and single set leg was significant (t(31)=3.3683, p=.002035).
+
+## Discussion
+
+The results of this study show that 2-3 weekly resistance training sessions improve maximal strength and lean mass. This is regardless of training volume, but the effect is greater when doing 3 sets instead of only 1. This is consistent with previous research [@rønnestad2007; @rhea2002; @schoenfeld2017]. McBride et al. [-@mcbride2003] came to the same conclusion regarding the effect of multiple set resistance training on strength gain but could not observe significant differences regarding lean mass. There are, however, differences in the response of the lower body compared to the upper body when it comes to strength gain. Studies show that training 3 sets was more effective for strength gain in the lower body. This could not always be said about the strength gain in the upper body [@rønnestad2007]. This indicates that it could be enough to train 1 set in upper body exercises and still get a significant effect on strength gain.
+
+One challenge with measuring body composition with a DXA scan could be that it has to be carried out very precisely as even little deviations can have a big impact on the results. It is important to standardize the testprotocol as well as what the participant does in the hours leading up to the test.
+
+## References
