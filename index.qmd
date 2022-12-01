@@ -1,3 +1,5 @@
 # Forord {.unnumbered}
 
-Data og reproduserbare filer for deloppgavene kan finnes her: https://github.com/pijuliea/innlevering-idr4000-qmd.
+Data og reproduserbare filer for deloppgavene kan finnes her:
+
+https://github.com/pijuliea/innlevering-idr4000-qmd.
