@@ -26,6 +26,8 @@ format:
   pdf:
     documentclass: scrreprt
     number-sections: false
+    include-in-header: 
+        - \usepackage{float}
 
 
 

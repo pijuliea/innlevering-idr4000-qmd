@@ -1,5 +1,10 @@
 # Deloppgave 5: Analysere repeterte målinger
 
+```{r}
+#| include: false
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
+```
+
 ## Introduction
 
 Resistance training is important for general health and increases strength and skeletal muscle size when done over a longer period of time. There are different variables and factors that influence the effect of resistance training and individuals show different responses to resistance training and its volume [@ahtiainen2016].
